@@ -54,10 +54,13 @@ func isRoman(s string) bool {
     return false
 }
 
-// Проверяет, является ли строка арабской цифрой
+// Проверяет, является ли строка арабской цифрой и находится ли в диапазоне от 1 до 10
 func isArabic(s string) bool {
-    _, err := strconv.Atoi(s)
-    return err == nil
+    num, err := strconv.Atoi(s)
+    if err != nil {
+        return false
+    }
+    return num >= 1 && num <= 10
 }
 
 // Выполняет арифметическую операцию с римскими цифрами
