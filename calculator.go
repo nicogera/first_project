@@ -16,8 +16,7 @@ func main() {
 
     parts := strings.Split(input, " ")
     if len(parts) != 3 {
-        fmt.Println("Ошибка: неверный формат ввода")
-        return
+        panic("Ошибка: неверный формат ввода")
     }
 
     a := parts[0]
@@ -27,23 +26,22 @@ func main() {
     if isRoman(a) && isRoman(b) {
         result, err := calculateRoman(a, b, operator)
         if err != nil {
-            fmt.Println("Ошибка:", err)
+            panic(err)
         } else {
             fmt.Println("Результат:", result)
         }
     } else if isArabic(a) && isArabic(b) {
         result, err := calculateArabic(a, b, operator)
         if err != nil {
-            fmt.Println("Ошибка:", err)
+            panic(err)
         } else {
             fmt.Println("Результат:", result)
         }
     } else {
-        fmt.Println("Ошибка: используйте либо арабские, либо римские цифры")
+        panic("Ошибка: используйте либо арабские, либо римские цифры")
     }
 }
 
-// Проверяет, является ли строка римской цифрой
 func isRoman(s string) bool {
     romanNumerals := []string{"I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"}
     for _, numeral := range romanNumerals {
@@ -54,7 +52,6 @@ func isRoman(s string) bool {
     return false
 }
 
-// Проверяет, является ли строка арабской цифрой и находится ли в диапазоне от 1 до 10
 func isArabic(s string) bool {
     num, err := strconv.Atoi(s)
     if err != nil {
@@ -63,14 +60,10 @@ func isArabic(s string) bool {
     return num >= 1 && num <= 10
 }
 
-// Выполняет арифметическую операцию с римскими цифрами
 func calculateRoman(a, b, operator string) (string, error) {
     romanToArabic := map[string]int{
         "I": 1, "II": 2, "III": 3, "IV": 4, "V": 5,
         "VI": 6, "VII": 7, "VIII": 8, "IX": 9, "X": 10,
-    }
-    arabicToRoman := []string{
-        "", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X",
     }
 
     aVal := romanToArabic[a]
@@ -94,10 +87,9 @@ func calculateRoman(a, b, operator string) (string, error) {
         return "", fmt.Errorf("результат меньше единицы")
     }
 
-    return arabicToRoman[result], nil
+    return arabicToRoman(result), nil
 }
 
-// Выполняет арифметическую операцию с арабскими цифрами
 func calculateArabic(a, b, operator string) (string, error) {
     aVal, _ := strconv.Atoi(a)
     bVal, _ := strconv.Atoi(b)
@@ -117,4 +109,18 @@ func calculateArabic(a, b, operator string) (string, error) {
     }
 
     return strconv.Itoa(result), nil
+}
+
+func arabicToRoman(num int) string {
+    val := []int{1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1}
+    syb := []string{"M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"}
+
+    roman := ""
+    for i := 0; i < len(val); i++ {
+        for num >= val[i] {
+            num -= val[i]
+            roman += syb[i]
+        }
+    }
+    return roman
 }
